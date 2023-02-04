@@ -1,20 +1,24 @@
+
 import { useEffect, useState } from "react";
 import api from "../../services/api";
 import './home.css'
 
 import { Link } from "react-router-dom";
 
-// URL da api /movie/now_playing?api_key=c77e9ff67959672dd16a018876f5ab28&language=pt-BR
+const nowPlaying = process.env.REACT_APP_API_NOW_PLAYING
+const apiKey = process.env.REACT_APP_API_KEY
+const language = process.env.REACT_APP_LANGUAGE
+
 const Home = () => {
   const [filmes, setFilmes] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  
   useEffect(() => {
     async function loadFilmes() {
-      const response = await api.get("movie/now_playing", {
+      const response = await api.get(nowPlaying, {
         params: {
-          api_key: "c77e9ff67959672dd16a018876f5ab28",
-          language: "pt-BR",
+          api_key: apiKey,
+          language:  language,
           page: 1,
         },
       });
