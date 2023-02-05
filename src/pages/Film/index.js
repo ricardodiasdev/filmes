@@ -5,6 +5,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import "./filme.info.css";
 
 import api from "../../services/api";
+import { toast } from "react-toastify";
 
 const Film = () => {
   const { id } = useParams();
@@ -31,7 +32,6 @@ const Film = () => {
           setLoading(false);
         })
         .catch(() => {
-          console.log("Filme não encontrado");
           navigation("/", { raplace: true });
           return;
         });
@@ -39,9 +39,7 @@ const Film = () => {
 
     loadFilmePorId();
 
-    return () => {
-      console.log("Componente desmontado.");
-    };
+    return 
   }, [apiKey, language, id, navigation]);
 
   const salvarFilme = () => {
@@ -51,12 +49,12 @@ const Film = () => {
       (filmeSalvo) => filmeSalvo.id === filme.id
     );
     if (hasFilm) {
-      alert("Esse filme já está na lista");
+      toast.warn("Esse filme já estava na lista...", {position: 'top-center'});;
       return;
     }
     filmesSalvos.push(filme);
     localStorage.setItem("@resumoFilmes", JSON.stringify(filmesSalvos));
-    alert("Filme salvo com sucesso");
+    toast.success("Filme salvo com sucesso...", {position: 'top-center'});
     
   };
 
