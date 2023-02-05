@@ -1,34 +1,45 @@
-import {useEffect, useState} from 'react'
-import {Link} from 'react-router-dom'
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
-import './favoritos.css'
+import "./favoritos.css";
 
 const Favoritos = () => {
-
   const [filmes, setFilmes] = useState([]);
+
   useEffect(() => {
     const minhaLista = localStorage.getItem("@resumoFilmes");
-    setFilmes(JSON.parse(minhaLista) || [])
-  }, [])
+    setFilmes(JSON.parse(minhaLista) || []);
+  }, []);
+
+  const handleDelete = (id) => {
+    let filtroFilmes = filmes.filter((item) => {
+      return (item.id !== id)
+    })
+
+    setFilmes(filtroFilmes)
+    localStorage.setItem("@resumoFilmes", JSON.stringify(filtroFilmes))
+
+  }
 
   return (
-    <div className='meus-filmes'>
+    <div className="meus-filmes">
       <h1>Meus filmes</h1>
+      {filmes.length === 0 && <span>Nenhum filme salvo...</span>}
       <ul>
         {filmes.map((item) => {
-          return(
+          return (
             <li key={item.id}>
               <span>{item.title}</span>
               <div>
                 <Link to={`/filme/${item.id}`}>Ver detalhes</Link>
-                <button>Excluir</button>
+                <button onClick={() => handleDelete(item.id)}>Excluir</button>
               </div>
             </li>
-          )
+          );
         })}
       </ul>
     </div>
-  )
-}
+  );
+};
 
-export default Favoritos
+export default Favoritos;
