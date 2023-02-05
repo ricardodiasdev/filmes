@@ -1,57 +1,57 @@
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 
-import './filme.info.css'
-
+import "./filme.info.css";
 
 import api from "../../services/api";
 
 const Film = () => {
+  const { id } = useParams();
 
-  const {id} = useParams();
+  const [filme, setFilme] = useState({});
+  const [loading, setLoading] = useState(true);
 
-  const [filme, setFilme] = useState({})
-  const [loading, setLoading] = useState(true)
+  const navigation = useNavigate();
 
-  const apiKey = process.env.REACT_APP_API_KEY
-  const language = process.env.REACT_APP_LANGUAGE
-
+  const apiKey = process.env.REACT_APP_API_KEY;
+  const language = process.env.REACT_APP_LANGUAGE;
 
   useEffect(() => {
-
     const loadFilmePorId = async () => {
-      await api.get(`/movie/${id}`,{
-        params: {
-          api_key: apiKey,
-          language: language
-        }
-      })
-      .then((response)=> {
-        setFilme(response.data)
-        setLoading(false)
-      })
-      .catch(() => {
-        console.log("Filme não encontrado")
-      })
-    }
+      await api
+        .get(`/movie/${id}`, {
+          params: {
+            api_key: apiKey,
+            language: language,
+          },
+        })
+        .then((response) => {
+          setFilme(response.data);
+          setLoading(false);
+        })
+        .catch(() => {
+          console.log("Filme não encontrado");
+          navigation("/", {raplace: true});
+          return;
+        });
+    };
 
-    loadFilmePorId()
+    loadFilmePorId();
 
     return () => {
-      console.log("Componente desmontado.")
-    }
+      console.log("Componente desmontado.");
+    };
+  }, [apiKey, language, id, navigation]);
 
-  }, [apiKey, language, id])
-
-  if(loading){
-    return(
+  if (loading) {
+    return (
       <div className="filme-info">
         <h2>Carregando filmes...</h2>
       </div>
-    )
+    );
   }
-  
+
   return (
     <div className="filme-info">
       <h1>{filme.title}</h1>
@@ -65,7 +65,7 @@ const Film = () => {
       <div className="area-buttons">
         <button>Salvar</button>
         <button>
-          <a href="#">Trailer</a>
+          <a target="_blank" rel="noreferrer" href={`https://youtube.com/results?search_query=${filme.title} trailers`}>Trailer</a>
         </button>
       </div>
     </div>
